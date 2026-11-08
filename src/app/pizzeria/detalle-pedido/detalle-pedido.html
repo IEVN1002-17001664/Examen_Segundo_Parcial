@@ -1,0 +1,117 @@
+<div class="min-h-screen bg-gray-50 p-6 dark:bg-gray-900">
+
+  <div class="mx-auto max-w-4xl">
+
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Detalle del pedido</h1>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Revisa las pizzas agregadas, quita las que no quieras y termina el pedido.
+      </p>
+    </div>
+
+    @if (mensaje()) {
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg bg-green-50 p-4 text-sm text-green-800" role="alert">
+        <span class="font-medium">{{ mensaje() }}</span>
+        <a [routerLink]="['/pizzeria/nuevo-pedido']" class="font-semibold underline hover:text-green-900">
+          Capturar otro pedido
+        </a>
+      </div>
+    }
+
+    @if (error()) {
+      <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm font-medium text-red-800" role="alert">
+        {{ error() }}
+      </div>
+    }
+
+    @if (pedidos.datosCliente(); as cliente) {
+      <div class="mb-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <h2 class="mb-3 text-lg font-semibold text-gray-900 dark:text-white">Cliente</h2>
+
+        <div class="grid gap-2 text-sm text-gray-600 sm:grid-cols-2 dark:text-gray-400">
+          <p><span class="font-semibold text-gray-900 dark:text-white">Nombre:</span> {{ cliente.nombre_cliente }}</p>
+          <p><span class="font-semibold text-gray-900 dark:text-white">Teléfono:</span> {{ cliente.telefono }}</p>
+          <p><span class="font-semibold text-gray-900 dark:text-white">Dirección:</span> {{ cliente.direccion }}</p>
+          <p><span class="font-semibold text-gray-900 dark:text-white">Fecha:</span> {{ cliente.fecha_pedido }}</p>
+        </div>
+      </div>
+    }
+
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+
+      <div class="relative overflow-x-auto">
+
+        <table class="w-full text-left text-sm text-gray-600 dark:text-gray-400">
+
+          <thead class="bg-gray-100 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+            <tr>
+              <th scope="col" class="px-6 py-4">Tamaño</th>
+              <th scope="col" class="px-6 py-4">Ingredientes</th>
+              <th scope="col" class="px-6 py-4">Núm. pizzas</th>
+              <th scope="col" class="px-6 py-4">Subtotal</th>
+              <th scope="col" class="px-6 py-4 text-center">Acción</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            @for (pizza of pedidos.pizzas(); track $index) {
+              <tr class="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ pizza.tamano }}</td>
+                <td class="px-6 py-4">{{ pizza.ingredientes }}</td>
+                <td class="px-6 py-4">{{ pizza.cantidad }}</td>
+                <td class="px-6 py-4">\${{ pizza.subtotal }}</td>
+                <td class="px-6 py-4 text-center">
+                  <button
+                    type="button"
+                    (click)="quitarPizza($index)"
+                    class="rounded-lg bg-red-700 px-3 py-2 text-xs font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300">
+                    Quitar
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                  No hay pizzas agregadas
+                </td>
+              </tr>
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-4 border-t border-gray-200 p-5 dark:border-gray-700">
+
+        <p class="text-lg font-bold text-gray-900 dark:text-white">
+          Total: \${{ pedidos.total() }}
+        </p>
+
+        <div class="flex flex-wrap gap-3">
+
+          <a
+            [routerLink]="['/pizzeria/nuevo-pedido']"
+            class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100">
+            Agregar más pizzas
+          </a>
+
+          <button
+            type="button"
+            (click)="terminarPedido()"
+            [disabled]="pedidos.pizzas().length === 0 || enviando()"
+            class="rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 disabled:cursor-not-allowed disabled:bg-gray-400">
+            Terminar
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

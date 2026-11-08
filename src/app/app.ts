@@ -1,12 +1,21 @@
-import { Component, signal } from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { initFlowbite } from 'flowbite';
+import { Navbar } from './navbar/navbar';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.css',
-  templateUrl: './app.html',
+  standalone: true,
+  imports: [RouterOutlet, Navbar],
+  templateUrl: './app.html'
 })
-export class App {
-  protected readonly title = signal('ExamenAngularSegundoParcial');
+export class App implements OnInit {
+
+  title = 'web-app';
+
+  ngOnInit(): void {
+    initFlowbite();
+  }
+
 }

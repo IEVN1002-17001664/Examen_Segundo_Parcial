@@ -1,0 +1,163 @@
+<div class="min-h-screen bg-gray-50 p-6 dark:bg-gray-900">
+
+  <div class="mx-auto max-w-4xl">
+
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Nuevo pedido</h1>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Captura los datos del cliente y agrega las pizzas del pedido.
+      </p>
+    </div>
+
+    @if (mensaje()) {
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg bg-green-50 p-4 text-sm text-green-800" role="alert">
+        <span class="font-medium">{{ mensaje() }}</span>
+        <a [routerLink]="['/pizzeria/detalle']" class="font-semibold underline hover:text-green-900">
+          Ver detalle del pedido
+        </a>
+      </div>
+    }
+
+    <form
+      [formGroup]="formulario"
+      (ngSubmit)="agregarPizza()"
+      class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+
+      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Datos del cliente</h2>
+
+      <div class="grid gap-6 md:grid-cols-2">
+
+        <div>
+          <label for="nombre_cliente" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nombre completo</label>
+          <input
+            type="text"
+            id="nombre_cliente"
+            formControlName="nombre_cliente"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="María Juárez">
+          @if (campoInvalido('nombre_cliente')) {
+            <p class="mt-1 text-sm text-red-600">El nombre es obligatorio</p>
+          }
+        </div>
+
+        <div>
+          <label for="telefono" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Teléfono</label>
+          <input
+            type="tel"
+            id="telefono"
+            formControlName="telefono"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="477-787-2323">
+          @if (campoInvalido('telefono')) {
+            <p class="mt-1 text-sm text-red-600">El teléfono es obligatorio</p>
+          }
+        </div>
+
+        <div>
+          <label for="direccion" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Dirección</label>
+          <input
+            type="text"
+            id="direccion"
+            formControlName="direccion"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+            placeholder="5 de mayo">
+          @if (campoInvalido('direccion')) {
+            <p class="mt-1 text-sm text-red-600">La dirección es obligatoria</p>
+          }
+        </div>
+
+        <div>
+          <label for="fecha_pedido" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Fecha de compra</label>
+          <input
+            type="date"
+            id="fecha_pedido"
+            formControlName="fecha_pedido"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500">
+          @if (campoInvalido('fecha_pedido')) {
+            <p class="mt-1 text-sm text-red-600">La fecha es obligatoria</p>
+          }
+        </div>
+
+      </div>
+
+      <hr class="my-6 border-gray-200 dark:border-gray-700">
+
+      <h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Pizza</h2>
+
+      <div class="grid gap-6 md:grid-cols-3">
+
+        <div>
+          <p class="mb-2 text-sm font-medium text-gray-900 dark:text-white">Tamaño</p>
+
+          <div class="space-y-2">
+            @for (t of tamanos; track t.nombre) {
+              <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700">
+                <input
+                  type="radio"
+                  formControlName="tamano"
+                  [value]="t.nombre"
+                  class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500">
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ t.nombre }}</span>
+                <span class="ms-auto text-sm text-gray-500">\${{ t.precio }}</span>
+              </label>
+            }
+          </div>
+
+          @if (campoInvalido('tamano')) {
+            <p class="mt-1 text-sm text-red-600">Selecciona un tamaño</p>
+          }
+        </div>
+
+        <div>
+          <p class="mb-2 text-sm font-medium text-gray-900 dark:text-white">Ingredientes</p>
+
+          <div class="space-y-2">
+            @for (ing of ingredientes; track ing.control) {
+              <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700">
+                <input
+                  type="checkbox"
+                  [formControlName]="ing.control"
+                  class="h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-blue-600 focus:ring-blue-500">
+                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ ing.nombre }}</span>
+                <span class="ms-auto text-sm text-gray-500">\${{ precioIngrediente }}</span>
+              </label>
+            }
+          </div>
+        </div>
+
+        <div>
+          <label for="cantidad" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Núm. de pizzas</label>
+          <input
+            type="number"
+            id="cantidad"
+            formControlName="cantidad"
+            min="1"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500">
+          @if (campoInvalido('cantidad')) {
+            <p class="mt-1 text-sm text-red-600">Ingresa un número entero mayor a 0</p>
+          }
+        </div>
+
+      </div>
+
+      <div class="mt-6 flex flex-wrap justify-end gap-3">
+
+        <a
+          [routerLink]="['/pizzeria/detalle']"
+          class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100">
+          Ver detalle ({{ pedidos.pizzas().length }})
+        </a>
+
+        <button
+          type="submit"
+          class="rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
+          Agregar
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
